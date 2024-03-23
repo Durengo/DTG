@@ -58,23 +58,41 @@ public class DecisionTreeGame {
 
     void updateTree(int index) {
         Scanner scanner = new Scanner(System.in);
-        logger.trace("What is the correct answer?");
-        String correctAnswer = scanner.nextLine();
-        logger.trace("What is the question distinguishing it?");
-        String question = scanner.nextLine();
 
+        // Ask for the new question
+        logger.trace("What is the new question?");
+        String newQuestion = scanner.nextLine();
+
+        // Ask for the outcome if the answer to the new question is "yes"
+        logger.trace("What is the outcome if the answer to the new question is Yes?");
+        String yesOutcome = scanner.nextLine();
+
+        // Ask for the outcome if the answer to the new question is "no"
+        logger.trace("What is the outcome if the answer to the new question is No?");
+        String noOutcome = scanner.nextLine();
+
+        // Determine indices for new elements
         int newQuestionIndex = data.size();
-        int newAnswerIndex = newQuestionIndex + 1;
+        int yesOutcomeIndex = newQuestionIndex + 1;
+        int noOutcomeIndex = yesOutcomeIndex + 1;
 
-        Element newQuestion = new Element(question, newQuestionIndex + 1, index + 1, newAnswerIndex + 1);
-        data.add(newQuestion);
+        // Create new question node
+        Element newQuestionNode = new Element(newQuestion, newQuestionIndex + 1, yesOutcomeIndex + 1, noOutcomeIndex + 1);
+        data.add(newQuestionNode);
 
-        Element newAnswer = new Element(correctAnswer, newAnswerIndex + 1, 0, 0);
-        data.add(newAnswer);
+        // Create yes outcome node
+        Element yesOutcomeNode = new Element(yesOutcome, yesOutcomeIndex + 1, 0, 0); // Assuming it's a leaf node
+        data.add(yesOutcomeNode);
 
+        // Create no outcome node
+        Element noOutcomeNode = new Element(noOutcome, noOutcomeIndex + 1, 0, 0); // Assuming it's a leaf node
+        data.add(noOutcomeNode);
+
+        // Link the existing node to the new question node
         data.get(index).setRid(newQuestionIndex + 1);
 
-        data_length += 2;
+        // Update data length
+        data_length += 3;
 
         save();
     }
