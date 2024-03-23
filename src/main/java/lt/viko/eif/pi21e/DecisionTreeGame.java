@@ -58,78 +58,61 @@ public class DecisionTreeGame {
 
     void updateTree(int index) {
         Scanner scanner = new Scanner(System.in);
-        logger.trace("What is the correct answer? ");
+        logger.trace("What is the correct answer?");
         String correctAnswer = scanner.nextLine();
-        logger.trace("What is the question distinguishing it? ");
+        logger.trace("What is the question distinguishing it?");
         String question = scanner.nextLine();
 
-        int newIndex = data.size(); // Get the new index for the added elements
+        int newQuestionIndex = data.size();
+        int newAnswerIndex = newQuestionIndex + 1;
 
-        // Update the current node's right child to point to the new element for "Is it a thingy"
-        int currentRightChildIndex = data.get(index).getRid();
-        data.get(index).setRid(newIndex);
+        Element newQuestion = new Element(question, newQuestionIndex + 1, index + 1, newAnswerIndex + 1);
+        data.add(newQuestion);
 
-        // Add the new element for "Is it a thingy"
-        data.add(new Element(correctAnswer, newIndex, 0, currentRightChildIndex));
+        Element newAnswer = new Element(correctAnswer, newAnswerIndex + 1, 0, 0);
+        data.add(newAnswer);
 
-        // Add the new element for the question distinguishing it
-        data.add(new Element(question, newIndex + 1, 0, 0));
+        data.get(index).setRid(newQuestionIndex + 1);
 
-        data_length += 2; // Increment the data length by 2 for the two added elements
+        data_length += 2;
 
         save();
-        //        Scanner scanner = new Scanner(System.in);
-//        logger.trace("What is the correct answer? ");
-//        String correctAnswer = scanner.nextLine();
-//        logger.trace("What is the question distinguishing it? ");
-//        String question = scanner.nextLine();
-//
-//        int newIndex = data.size(); // Get the new index for the added elements
-//
-//        data_length++;
-//        data.add(new Element(data.get(index).getInfo(), newIndex, 0, 0)); // Use newIndex here
-//        data.get(index).setRid(newIndex);
-//
-//        data_length++;
-//        data.add(new Element(correctAnswer, data_length, 0, 0)); // Keep data_length for the next index
-//        data.get(index).setLid(data_length);
-//
-//        data.get(index).setInfo(question);
-//
-//        save();
     }
 
     void game() {
         Scanner scanner = new Scanner(System.in);
-        int index = 1; // Start at the initial question
-        char c;
+        int index = 0;
 
-        // Display the initial question
-        logger.info(data.get(index).getInfo() + "? Yes/No ");
-
-        while (index != 0) {
-            c = scanner.next().charAt(0);
-            scanner.nextLine();
-            if (Character.toUpperCase(c) == 'Y') {
-                index = data.get(index).getLid();
-            } else {
-                index = data.get(index).getRid();
+        while (true) {
+            if (index < 0 || index >= data.size()) {
+                logger.error("Invalid index: " + index);
+                break;
             }
 
-            // Check if we've reached a potential leaf node
-            if (index != 0) {
-                logger.info(data.get(index).getInfo() + "? Yes/No ");
-            } else {
-                // We've reached a leaf, so ask the final guess
-                logger.info(data.get(index).getInfo() + "? Yes/No ");
-                c = scanner.next().charAt(0);
+            Element currentElement = data.get(index);
+
+            if (currentElement.getLid() == 0 && currentElement.getRid() == 0) {
+                logger.info(currentElement.getInfo() + "? Yes/No");
+                char response = Character.toUpperCase(scanner.next().charAt(0));
                 scanner.nextLine();
-                if (Character.toUpperCase(c) == 'N') {
+
+                if (response == 'N') {
                     updateTree(index);
+                    index = 0;
+                } else {
+                    break;
+                }
+            } else {
+                logger.info(currentElement.getInfo() + "? Yes/No");
+                char response = Character.toUpperCase(scanner.next().charAt(0));
+                scanner.nextLine();
+
+                if (response == 'Y') {
+                    index = currentElement.getLid() - 1;
+                } else {
+                    index = currentElement.getRid() - 1;
                 }
             }
         }
     }
-
-
 }
