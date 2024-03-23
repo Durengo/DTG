@@ -28,7 +28,7 @@ public class Main {
     }
 
     private static String load_file() {
-        String filePath = "build/resources/main/data";
+        String filePath = "res/data";
         File file = new File(filePath);
 
         if (file.exists()) {
@@ -58,7 +58,7 @@ public class Main {
 
         // If file doesn't exist, create it
         try {
-            Files.createDirectories(Paths.get("build/resources/main"));
+            Files.createDirectories(Paths.get("res"));
             Files.write(Paths.get(filePath), getFileContent().getBytes(), StandardOpenOption.CREATE);
             logger.info("New file created at: {}", filePath);
             return filePath;

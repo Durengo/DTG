@@ -25,6 +25,20 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.4.14")
 }
 
+tasks {
+    withType<Jar> {
+        manifest {
+            attributes["Main-Class"] = "lt.viko.eif.pi21e.Main"
+        }
+
+        from({
+            configurations.runtimeClasspath.get().filter { it.isFile }.map { zipTree(it) }
+        })
+
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+}
+
 tasks.test {
     useJUnitPlatform()
 }
